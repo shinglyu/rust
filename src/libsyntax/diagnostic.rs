@@ -650,14 +650,14 @@ fn highlight_lines(err: &mut EmitterWriter,
             }
 
             try!(write!(&mut err.dst, "{}", s));
-            let mut s = String::from("^");
+            let mut s = String::from("\u{2517}");
             let count = match lastc {
                 // Most terminals have a tab stop every eight columns by default
                 '\t' => 8 - col%8,
                 _ => 1,
             };
             col += count;
-            s.extend(::std::iter::repeat('~').take(count));
+            s.extend(::std::iter::repeat('\u{2501}').take(count));
 
             let hi = cm.lookup_char_pos(sp.hi);
             if hi.col != lo.col {
@@ -667,8 +667,18 @@ fn highlight_lines(err: &mut EmitterWriter,
                         '\t' => 8 - col%8,
                         _ => 1,
                     };
+                    if pos + count >= hi.col.to_usize() { 
+                        match ch {
+                            '\t' => {
+                                s.extend(::std::iter::repeat('\u{2501}').take(count - 1));
+                                s.push('\u{251B}')
+                            }
+                            _ => s.push('\u{251B}')
+                        }
+                        break; 
+                    }
                     col += count;
-                    s.extend(::std::iter::repeat('~').take(count));
+                    s.extend(::std::iter::repeat('\u{2501}').take(count));
                 }
             }
 
