@@ -83,7 +83,7 @@ impl<'infcx, 'tcx> MirBorrowckCtxt<'_, 'infcx, 'tcx> {
             location, desired_action, moved_place, used_place, span, mpi
         );
 
-        let original_use_span = span;  // Save original use span for struct field reordering suggestion
+        let original_use_span = span; // Save original use span for struct field reordering suggestion
         let use_spans =
             self.move_spans(moved_place, location).or_else(|| self.borrow_spans(span, location));
         let span = use_spans.args_or_use();
@@ -1617,10 +1617,8 @@ impl<'infcx, 'tcx> MirBorrowckCtxt<'_, 'infcx, 'tcx> {
                 // Suggest initializing the use field before the move field
                 // This creates a suggestion that shows the use_field moving to where move_field was,
                 // and move_field moving to where use_field was
-                let sugg = vec![
-                    (move_field.span, use_field_text),
-                    (use_field.span, move_field_text),
-                ];
+                let sugg =
+                    vec![(move_field.span, use_field_text), (use_field.span, move_field_text)];
 
                 err.multipart_suggestion_verbose(
                     format!("consider initializing `{use_field_name}` before `{move_field_name}`"),
